@@ -6,9 +6,12 @@
 package p79_21137774;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -39,7 +42,7 @@ public class View extends JFrame implements Observer{
     private JLabel playerHand = new JLabel("Your hand value:", JLabel.LEFT);
     private JLabel opponentHand = new JLabel("Opponent hand value:", JLabel.LEFT);
     
-    private JLabel currentBalance = new JLabel("Current Balance: $");
+    private JLabel balance;
     
     private JButton logIn = new JButton("Log in");
     private JButton signUp = new JButton("Sign up");
@@ -75,23 +78,25 @@ public class View extends JFrame implements Observer{
     
     public void preGamePhase(int balance)
     {
-        currentBalance = new JLabel("Current Balance: $"+ balance);
-        this.preGame.add(message);
-        this.preGame.add(currentBalance);
+        this.balance= new JLabel ("Balance: $" + balance);
+        this.message.setText("Welcome");
         this.preGame.add(bet);
-        this.preGame.add(betInput);
-        this.preGame.add(start);
-        this.preGame.add(restart);
-
+        this.preGame.add(betInput); 
+        this.preGame.add(this.start);
+        this.preGame.add(this.restart);
+        
         this.getContentPane().removeAll();
-        preGame.setVisible(true);
+        this.add(this.balance, BorderLayout.PAGE_START);
+        this.add(preGame, BorderLayout.CENTER);
+        this.add(message,BorderLayout.PAGE_END);
         this.revalidate();
-        this.add(preGame);
+        this.preGame.setVisible(true);
         this.repaint();
     }
     
     public void game(int betAmount) 
     {
+        
         JLabel betDisplay = new JLabel("Bet ammount: $" + betAmount);
         this.game.add(betDisplay);
         this.game.add(playerHand);
@@ -107,8 +112,8 @@ public class View extends JFrame implements Observer{
     
     public void afterGamePhase(int newBalance)
     {
-        currentBalance = new JLabel("Current Balance: $" + newBalance);
-        this.afterGame.add(currentBalance);
+        balance = new JLabel("Current Balance: $" + newBalance);
+        this.afterGame.add(balance);
         this.afterGame.add(playAgain);
         this.afterGame.add(quit);
         this.afterGame.add(restart);
