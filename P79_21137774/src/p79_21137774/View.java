@@ -34,9 +34,9 @@ public class View extends JFrame implements Observer{
     private JPanel preGame = new JPanel();
     
     private JLabel username = new JLabel("Username");
-    public JTextField usernameInput = new JTextField(18);
+    public JTextField usernameInput = new JTextField(20);
     private JLabel password = new JLabel("Password");
-    public JTextField passwordInput = new JTextField(18);
+    public JTextField passwordInput = new JTextField(20);
 
     public JLabel message = new JLabel("Welcome", JLabel.CENTER);
     
@@ -59,8 +59,10 @@ public class View extends JFrame implements Observer{
         
     public boolean started = false;
     public boolean betFinish = false;
+   
     public int x = 150;
     public int y = 100;
+    public int x_fordh = 150;
     public int y_frameSize = 800;
     
     public View ()
@@ -82,6 +84,10 @@ public class View extends JFrame implements Observer{
         this.setVisible(true);       
     }
     
+    public void tooLong()
+    {
+        this.message.setText("Your username and password must be less than 20 characters each!");
+    }
     
     public void preGamePhase(int balance)
     {
@@ -110,7 +116,7 @@ public class View extends JFrame implements Observer{
         this.balance.setBounds(200, 0, 150, 30);
         betDisplay.setBounds(0, 0, 120, 30);     
         this.message = new JLabel("your turn!");
-        this.message.setBounds(570, 600, 60, 30);
+        this.message.setBounds(500, 600, 400, 30);
         this.draw.setBounds(450, 700, 120, 30);
         this.stand.setBounds(600, 700, 120, 30);
         this.playerHand.setBounds(0, 100, 100, 30);
@@ -125,41 +131,64 @@ public class View extends JFrame implements Observer{
         this.add(message);
         this.add(draw);
         this.add(stand);
-        this.setVisible(true);
         
         this.revalidate();
         this.repaint();
     }
     
     public void addCardImage(Card c)
-    {      
+    {       
+        this.y_frameSize += 1;
         CardImage cardImage = new CardImage();
         cardImage.c = c;
         cardImage.setBounds(this.x, this.y, 150, 200);
         this.add(cardImage);
-        this.setVisible(true);
-        this.validate();
-        this.revalidate();
-        this.repaint();
-        this.setSize(1200, this.y_frameSize);
+        this.setSize(1200, this.y_frameSize);//sometime the JComponent doesn't show up until I resize the frame...
         this.x = this.x + 200;   
-        this.y_frameSize += 1;
     }
     
+    public void dealerPhase(Card c)
+    {
+        this.y_frameSize += 1;
+        CardImage cardImage = new CardImage();
+        cardImage.c = c;
+        cardImage.setBounds(this.x_fordh, 350, 150, 200);
+        this.add(cardImage);
+        this.setSize(1200, this.y_frameSize);//sometime the JComponent doesn't show up until I resize the frame...
+        this.x_fordh += 200;  
+    }
     
+    public void nofifyResult(int r, int betAmount)
+    {
+        if(r == 0)
+        {           
+            this.message.setText("Draw! + 0$ to your account!");
+        }
+
+        else if(r == 1) 
+        {
+            this.message.setText("You win! + $" + betAmount + " to your account");
+        }
+
+        else
+        {
+            this.message.setText("You lose! - $" + betAmount + " to your account");
+        }
+    }
     
     public void afterGamePhase(int newBalance)
     {
-        balance = new JLabel("Current Balance: $" + newBalance);
-        this.afterGame.add(balance);
-        this.afterGame.add(playAgain);
-        this.afterGame.add(quit);
-        this.afterGame.add(restart);
-        this.getContentPane().removeAll();
-        afterGame.setVisible(true);
+        this.remove(draw);
+        this.remove(stand);
+        
+        playAgain.setBounds(350, 700, 120, 30);
+        quit.setBounds(500, 700, 120, 30);
+        restart.setBounds(650, 700, 120, 30);
+        this.add(playAgain);
+        this.add(quit);
+        this.add(restart);
+        this.balance.setText("Balance: $" + newBalance);
         this.revalidate();
-        this.add(afterGame);
-        this.repaint(); 
     }
     
     public void addActionListener(ActionListener listener)
@@ -173,26 +202,41 @@ public class View extends JFrame implements Observer{
         this.quit.addActionListener(listener);
         this.restart.addActionListener(listener);
     }
-
+    
+    //whenever a flag turn on do sth.
     @Override
     public void update(Observable o, Object arg) {
         PlayerData pd = (PlayerData) arg;
-        if(pd.loginFlag == false)
+        if(pd.invalidInputFlag == true)
+        {
+            this.usernameInput.setText("");
+            this.passwordInput.setText("");        
+            this.message.setText("Both your username and password must be less than 12 characters!");
+        }
+        
+        else if(pd.loginFlag == false)
         {
             this.usernameInput.setText("");
             this.passwordInput.setText("");
-            if(pd.existFlag == true)
-            {
+            
+            
+            if(pd.existFlagForLogin == true)
+            { 
                 this.message.setText("Wrong password!");
             }
-            
-            else
+   
+            else 
             {
                 this.message.setText("This username doesn't exist! Please use the sign up button!");
             }
+            
+            if(pd.existFlagForSignup == true)
+            {
+                this.message.setText("This username has been taken! Try a new one!");
+            }
+
         }
-        
-        
+  
         else if(!this.betFinish)
         {
             this.started = true;

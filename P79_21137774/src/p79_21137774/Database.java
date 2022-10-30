@@ -97,7 +97,7 @@ public class Database {
             {
                 String p = rs.getString("password");
                 System.out.println("found user with password is: " + p);
-                pd.existFlag = true;
+                pd.existFlagForLogin = true;
                 
                 if(p.compareTo(password) == 0)
                 {
@@ -114,7 +114,7 @@ public class Database {
             else
             {
                 pd.loginFlag = false;
-                pd.existFlag = false;
+                pd.existFlagForLogin = false;
                 System.out.println("No such user");
             }
         } catch (SQLException ex) {
@@ -127,27 +127,36 @@ public class Database {
     public PlayerData addNewPlayer(String username, String password)
     {
         PlayerData pd = new PlayerData();
-        try {
-            Statement statement = conn.createStatement();
-            ResultSet rs = statement.executeQuery("SELECT username, password, balance FROM PlayerInfo " + "WHERE username = '" + username + "'");
-            if(rs.next())
-            {
-                System.out.println("This username has been taken!");
-                pd.loginFlag = false;
-                pd.existFlag = true;
-            }
-            
-            else
-            {
-                System.out.println("Adding new player success!");
-                statement.executeUpdate("INSERT INTO PlayerInfo " + "VALUES('" + username + "', '" + password + "', 100)");
-                pd.balance = 100; //new player will have 100 credit initially.
-                pd.loginFlag = true;               
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+        if (username.length() > 12 || username.length() == 0 || password.length() > 12 || password.length() == 0)
+        {
+            pd.invalidInputFlag = true;
         }
         
+        if(pd.invalidInputFlag == false)
+        {
+            try 
+            {
+                Statement statement = conn.createStatement();
+                ResultSet rs = statement.executeQuery("SELECT username, password, balance FROM PlayerInfo " + "WHERE username = '" + username + "'");
+                if(rs.next())
+                {
+                    System.out.println("Adding new player fail due to the username is already in the database!");
+                    pd.loginFlag = false;
+                    pd.existFlagForSignup = true;
+                }
+
+                else
+                {        
+                    statement.executeUpdate("INSERT INTO PlayerInfo " + "VALUES('" + username + "', '" + password + "', 100)");
+                    pd.balance = 100; //new player will have 100 credit initially.
+                    pd.loginFlag = true;   
+                    System.out.println("Adding new player success!");
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+       
         return pd;
     }
 }

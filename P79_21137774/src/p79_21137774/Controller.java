@@ -30,11 +30,13 @@ public class Controller implements ActionListener{
         String command = e.getActionCommand();
         String username;
         String password;
+        boolean dealerDone = false;
+        
         switch (command)
         {
             case "Log in":
                 username = this.view.usernameInput.getText();
-                password = this.view.usernameInput.getText();
+                password = this.view.passwordInput.getText();
                 this.model.checkInfo(username, password);
                 if(this.model.pd.loginFlag == true)
                 {
@@ -44,7 +46,8 @@ public class Controller implements ActionListener{
                 break;
             case "Sign up":
                 username = this.view.usernameInput.getText();
-                password = this.view.usernameInput.getText();
+                password = this.view.passwordInput.getText();
+                
                 this.model.newPlayer(username, password);
                 if(this.model.pd.loginFlag == true)
                 {
@@ -64,22 +67,19 @@ public class Controller implements ActionListener{
 
                     else
                     {
-                        //this.model.gameStart();
+                        
                         this.view.game(betAmount, this.model.pd.balance);
                         
                         Card c1 = this.model.getCardFromDeck();
-                        this.model.draw(c1);
+                        this.model.playerDraw(c1);
                         this.view.addCardImage(c1);
                         
                         Card c2 = this.model.getCardFromDeck();
-                        this.model.draw(c2);
+                        this.model.playerDraw(c2);
                         this.view.addCardImage(c2);
                                  
                         break;
-                        
-
-                    }
-                                   
+                    }                   
                 }
                 catch (NumberFormatException ex)
                 {
@@ -89,17 +89,50 @@ public class Controller implements ActionListener{
                 break;
                 
             case "Draw":
-                Card c = this.model.getCardFromDeck();
-                this.model.draw(c);
-                this.view.addCardImage(c);
+                if(this.model.ph.hand.size() == 5)
+                {
+                    System.out.println("Maximum number of card reached! Cant Draw!");
+                    this.view.message.setText("You have 5 cards already! Please press stand. ");
+                }
+                else if(this.model.ph.handValue() >= 21)
+                {
+                    System.out.println("Player hand value >= 21! Cant Draw!");
+                    this.view.message.setText("Your hand value is >= 21! Please press stand.");
+                }
+                else
+                {
+                    Card c = this.model.getCardFromDeck();
+                    this.model.playerDraw(c);
+                    this.view.addCardImage(c);
+                }
+                
                 break;
             case "Stand":
+                System.out.println("Dealer hand: ");
+                Card c3;
+                while(dealerDone == false)
+                {
+                    c3 = this.model.getCardFromDeck();
+                    dealerDone = this.model.dealerDraw(c3);
+                    this.view.dealerPhase(c3);
+                }
+                
+                this.model.compareHand();
+                this.model.updateBalance();      
+                this.view.nofifyResult(this.model.result, this.model.betAmount);
+                this.view.afterGamePhase(this.model.pd.balance);
+                
                 break;
             case "Play Again":
+                this.view.preGamePhase(this.model.pd.balance);
+                this.view.betInput.setText("");
                 break;
+                
             case "Restart":
+                
                 break;
             case "Quit":
+                //show
                 break;
             default:
                 break;      

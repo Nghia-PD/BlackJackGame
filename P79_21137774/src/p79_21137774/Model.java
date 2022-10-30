@@ -36,11 +36,6 @@ public class Model extends Observable{
     {
         this.username = username;
         this.pd = this.db.checkInfo(username, password);
-        if(pd.loginFlag == true)
-        {
-            this.newGame();
-        }
-        
         this.setChanged();
         this.notifyObservers(this.pd);
     }
@@ -49,10 +44,8 @@ public class Model extends Observable{
     {
         this.username = username;
         this.pd = this.db.addNewPlayer(username, password);
-        if (pd.loginFlag == true)
-        {
-            this.newGame();
-        }
+        this.setChanged();
+        this.notifyObservers(this.pd);
     }
     
     
@@ -65,7 +58,7 @@ public class Model extends Observable{
     public boolean betting(int betAmount)
     {
         boolean bettingFlag = false;
-        if(0< betAmount && betAmount <this.pd.balance)
+        if(0 < betAmount && betAmount <= this.pd.balance)
         {                
             bettingFlag = true;
             this.betAmount = betAmount;
@@ -86,13 +79,11 @@ public class Model extends Observable{
         System.out.println("Player current hand value: " + ph.handValue());       
     }
     
-    public int draw(Card c) // for the draw button
+    public void playerDraw(Card c) // for the draw button
     {
         ph.draw(c);
         ph.showHand();
-        System.out.println("Your current hand value is : " + ph.handValue());
-        
-        return ph.handValue();
+        System.out.println("Player current hand value: " + ph.handValue());    
     }
     
     
@@ -102,6 +93,20 @@ public class Model extends Observable{
         this.deck.updateDeck(card);
         
         return card;
+    }
+    
+    public boolean dealerDraw(Card c)
+    {
+        boolean dealerFlag = false;
+        
+        dh.draw(c);
+        System.out.println(c);
+        if (dh.handValue() > 16 || dh.hand.size() == 5)
+        {
+            dealerFlag = true;
+            System.out.println("Dealer hand value: " + dh.handValue());
+        }
+        return dealerFlag;
     }
     
     public void compareHand()
@@ -144,11 +149,11 @@ public class Model extends Observable{
         switch (result) {
             case 1:
                 System.out.println("Player win!");
-                this.pd.balance += this.betAmount;
+                this.pd.balance = this.pd.balance + this.betAmount;
                 break;
             case -1:
                 System.out.println("Player lose!");
-                this.pd.balance -= this.betAmount;
+                this.pd.balance = this.pd.balance - this.betAmount;
                 break;
             default:
                 System.out.println("Draw!");                

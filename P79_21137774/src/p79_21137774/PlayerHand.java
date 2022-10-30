@@ -40,11 +40,15 @@ public class PlayerHand extends Hand implements Draw{
   
     @Override
     public void draw(Card c) {
-        if(handValue() >= 21)
+        if(handValue() >= 21 )
         {
             System.out.println("Your hand is currently >= 21, you cannot draw another card!");
         }
         
+        else if (super.hand.size() == 5)
+        {
+            System.out.println("Maximum no of card reached!");
+        }
         else
         {
             super.hand.add(c);
