@@ -28,6 +28,6 @@ public class Card {
     @Override
     public String toString()
     {
-        return this.suit.name() + " of " + this.rank.name();
+        return this.rank.name() + " of " + this.suit.name();
     }
 }

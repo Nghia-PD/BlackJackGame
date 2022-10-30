@@ -13,7 +13,7 @@ import java.util.HashSet;
  */
 public class PlayerHand extends Hand implements Draw{
      
-    PlayerHand()
+    public PlayerHand()
     {
         super.hand = new HashSet<>();
     }

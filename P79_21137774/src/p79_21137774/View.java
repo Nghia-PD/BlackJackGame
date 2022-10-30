@@ -6,6 +6,7 @@
 package p79_21137774;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
@@ -23,9 +24,12 @@ import javax.swing.JTextField;
  * @author nghia
  */
 public class View extends JFrame implements Observer{
+    Container c;
     
     private JPanel user = new JPanel();
-    private JPanel game = new JPanel();
+    private JPanel game_button = new JPanel();
+    private JPanel game_ph = new JPanel();
+    private JPanel game_dh = new JPanel();
     private JPanel afterGame = new JPanel();
     private JPanel preGame = new JPanel();
     
@@ -39,8 +43,8 @@ public class View extends JFrame implements Observer{
     private JLabel bet = new JLabel("Bet Amount: ");
     public JTextField betInput = new JTextField(7);  
     
-    private JLabel playerHand = new JLabel("Your hand value:", JLabel.LEFT);
-    private JLabel opponentHand = new JLabel("Opponent hand value:", JLabel.LEFT);
+    private JLabel playerHand = new JLabel("Your hand:", JLabel.LEFT);
+    private JLabel computerHand = new JLabel("Computer hand:", JLabel.LEFT);
     
     private JLabel balance;
     
@@ -55,11 +59,14 @@ public class View extends JFrame implements Observer{
         
     public boolean started = false;
     public boolean betFinish = false;
+    public int x = 150;
+    public int y = 100;
+    public int y_frameSize = 800;
     
     public View ()
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(600,400);
+        this.setSize(1200,800);
         this.setLocationRelativeTo(null);
         
         //add component to user panel
@@ -94,18 +101,49 @@ public class View extends JFrame implements Observer{
         this.repaint();
     }
     
-    public void game(int betAmount) 
+    public void game(int betAmount, int balance) 
     {
-        
+        this.getContentPane();
+        this.setLayout(null);
         JLabel betDisplay = new JLabel("Bet ammount: $" + betAmount);
-        this.game.add(betDisplay);
-        this.game.add(playerHand);
-        //card pic
-        this.game.add(opponentHand);
-        //card pic
-        this.game.add(draw);
-        this.game.add(stand);
-        this.game.add(message, BorderLayout.SOUTH);
+        this.balance = new JLabel ("Current balance: $" + balance);
+        this.balance.setBounds(200, 0, 150, 30);
+        betDisplay.setBounds(0, 0, 120, 30);     
+        this.message = new JLabel("your turn!");
+        this.message.setBounds(570, 600, 60, 30);
+        this.draw.setBounds(450, 700, 120, 30);
+        this.stand.setBounds(600, 700, 120, 30);
+        this.playerHand.setBounds(0, 100, 100, 30);
+        this.computerHand.setBounds(0, 350, 120, 30);
+        
+        this.getContentPane().removeAll();
+        this.add(this.balance);
+        this.add(betDisplay);
+        this.add(this.playerHand);
+        
+        this.add(this.computerHand);
+        this.add(message);
+        this.add(draw);
+        this.add(stand);
+        this.setVisible(true);
+        
+        this.revalidate();
+        this.repaint();
+    }
+    
+    public void addCardImage(Card c)
+    {      
+        CardImage cardImage = new CardImage();
+        cardImage.c = c;
+        cardImage.setBounds(this.x, this.y, 150, 200);
+        this.add(cardImage);
+        this.setVisible(true);
+        this.validate();
+        this.revalidate();
+        this.repaint();
+        this.setSize(1200, this.y_frameSize);
+        this.x = this.x + 200;   
+        this.y_frameSize += 1;
     }
     
     
@@ -163,7 +201,7 @@ public class View extends JFrame implements Observer{
         
         else if(!this.started)
         {
-            this.game(pd.betAmount);
+            this.game(pd.betAmount, pd.balance);
         }
         
         else if(pd.quitFlag)

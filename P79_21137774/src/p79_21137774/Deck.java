@@ -33,12 +33,13 @@ public class Deck{
     }
     
     public Card newCardFromDeck()
-    {    
+    {   
+        
         Random random = new Random();
         int index = random.nextInt(limit);  
-        
+        Card card = this.deckOfCard.get(index);
         limit--;
-        return this.deckOfCard.get(index);      
+        return card;      
     }
     
     public void updateDeck(Card c)

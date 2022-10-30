@@ -24,8 +24,12 @@ public class Model extends Observable{
     
     public Model()
     {
-        this.db = new Database();
+        this.db = new Database();      
         db.setup();
+        this.deck = new Deck();
+        deck.createDeck();
+        this.ph = new PlayerHand();
+        this.dh = new DealerHand();
     }
     
     public void checkInfo(String username, String password)
@@ -50,6 +54,8 @@ public class Model extends Observable{
             this.newGame();
         }
     }
+    
+    
     
     public void newGame()
     {

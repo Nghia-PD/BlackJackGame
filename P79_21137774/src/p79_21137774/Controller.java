@@ -64,19 +64,34 @@ public class Controller implements ActionListener{
 
                     else
                     {
+                        //this.model.gameStart();
+                        this.view.game(betAmount, this.model.pd.balance);
+                        
+                        Card c1 = this.model.getCardFromDeck();
+                        this.model.draw(c1);
+                        this.view.addCardImage(c1);
+                        
+                        Card c2 = this.model.getCardFromDeck();
+                        this.model.draw(c2);
+                        this.view.addCardImage(c2);
+                                 
+                        break;
+                        
 
-                        this.view.game(betAmount);
                     }
-                    
+                                   
                 }
-                catch (InputMismatchException ex)
+                catch (NumberFormatException ex)
                 {
                     this.view.message.setText("Please type a number!");
                 }
-                
+                                
                 break;
                 
             case "Draw":
+                Card c = this.model.getCardFromDeck();
+                this.model.draw(c);
+                this.view.addCardImage(c);
                 break;
             case "Stand":
                 break;
