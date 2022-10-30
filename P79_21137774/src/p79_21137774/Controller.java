@@ -8,6 +8,7 @@ package p79_21137774;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.InputMismatchException;
+import javax.swing.JFrame;
 
 /**
  *
@@ -125,14 +126,19 @@ public class Controller implements ActionListener{
                 break;
             case "Play Again":
                 this.view.preGamePhase(this.model.pd.balance);
+                this.model.newGame();
+                this.view.resetSize();
                 this.view.betInput.setText("");
                 break;
                 
             case "Restart":
-                
+                this.model.restart();
+                this.view.restart();
                 break;
+                
             case "Quit":
-                //show
+                this.view.quit(this.model.pd.balance);
+                this.model.quitGame();
                 break;
             default:
                 break;      

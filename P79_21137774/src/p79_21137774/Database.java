@@ -75,11 +75,11 @@ public class Database {
         return flag;
     }
     
-    public void quitGame(int score, String username) {
+    public void quitGame(int balance, String username) {
         Statement statement;
         try {
             statement = conn.createStatement();
-            statement.executeUpdate("UPDATE PlayerInfo SET score=" + score + " WHERE username='" + username + "'");
+            statement.executeUpdate("UPDATE PlayerInfo SET balance=" + balance + " WHERE username='" + username + "'");
 
         } catch (SQLException ex) {
             Logger.getLogger(Database.class.getName()).log(Level.SEVERE, null, ex);

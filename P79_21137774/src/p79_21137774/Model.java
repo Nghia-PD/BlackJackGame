@@ -49,10 +49,10 @@ public class Model extends Observable{
     }
     
     
-    
     public void newGame()
     {
-        
+        this.ph = new PlayerHand();
+        this.dh = new DealerHand();
     }
     
     public boolean betting(int betAmount)
@@ -162,8 +162,15 @@ public class Model extends Observable{
         
         this.setChanged();
     }
+   
+    public void restart()//restart the game
+    {
+        this.pd.restartFlag = true;
+        this.setChanged();
+        this.notifyObservers(this.pd);
+    }
     
-    public void quitGame()
+    public void quitGame()//quit the game
     {
         this.db.quitGame(this.pd.balance, username);
         this.pd.quitFlag = true;

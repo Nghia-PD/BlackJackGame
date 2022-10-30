@@ -27,25 +27,21 @@ public class View extends JFrame implements Observer{
     Container c;
     
     private JPanel user = new JPanel();
-    private JPanel game_button = new JPanel();
-    private JPanel game_ph = new JPanel();
-    private JPanel game_dh = new JPanel();
-    private JPanel afterGame = new JPanel();
-    private JPanel preGame = new JPanel();
+   // private JPanel game_button = new JPanel();
+   //private JPanel game_ph = new JPanel();
+   // private JPanel game_dh = new JPanel();
+    //private JPanel afterGame = new JPanel();
+    //private JPanel preGame = new JPanel();
     
     private JLabel username = new JLabel("Username");
-    public JTextField usernameInput = new JTextField(20);
+    public JTextField usernameInput = new JTextField(12);
     private JLabel password = new JLabel("Password");
-    public JTextField passwordInput = new JTextField(20);
-
+    public JTextField passwordInput = new JTextField(12);
     public JLabel message = new JLabel("Welcome", JLabel.CENTER);
-    
     private JLabel bet = new JLabel("Bet Amount: ");
     public JTextField betInput = new JTextField(7);  
-    
     private JLabel playerHand = new JLabel("Your hand:", JLabel.LEFT);
     private JLabel computerHand = new JLabel("Computer hand:", JLabel.LEFT);
-    
     private JLabel balance;
     
     private JButton logIn = new JButton("Log in");
@@ -63,24 +59,29 @@ public class View extends JFrame implements Observer{
     public int x = 150;
     public int y = 100;
     public int x_fordh = 150;
-    public int y_frameSize = 800;
+    public int y_frameSize = 801;
     
     public View ()
     {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1200,800);
+        this.setSize(600,400);
         this.setLocationRelativeTo(null);
         
-        //add component to user panel
-        this.user.add(username);
-        this.user.add(usernameInput);
-        this.user.add(password);
-        this.user.add(passwordInput);
-        this.user.add(logIn);
-        this.user.add(signUp);
-        this.add(this.message,BorderLayout.SOUTH);
+        this.username.setBounds(170, 130, 120, 30);
+        this.usernameInput.setBounds(270, 130, 120, 30);
+        this.password.setBounds(170, 180, 120,30);
+        this.passwordInput.setBounds(270, 180, 120,30);
+        this.logIn.setBounds(170, 300, 120,30);
+        this.signUp.setBounds(320, 300, 120,30);
         
-        this.add(user); //add panel to frame
+        this.add(username);
+        this.add(usernameInput);
+        this.add(password);
+        this.add(passwordInput);
+        this.add(logIn);
+        this.add(signUp);
+        this.add(this.message,BorderLayout.SOUTH);
+        this.add(user);
         this.setVisible(true);       
     }
     
@@ -91,25 +92,32 @@ public class View extends JFrame implements Observer{
     
     public void preGamePhase(int balance)
     {
-        this.balance= new JLabel ("Balance: $" + balance);
-        this.message.setText("Welcome");
-        this.preGame.add(bet);
-        this.preGame.add(betInput); 
-        this.preGame.add(this.start);
-        this.preGame.add(this.restart);
-        
+        this.setSize(600,400);
+        this.setLocationRelativeTo(null);
         this.getContentPane().removeAll();
-        this.add(this.balance, BorderLayout.PAGE_START);
-        this.add(preGame, BorderLayout.CENTER);
-        this.add(message,BorderLayout.PAGE_END);
+        this.balance= new JLabel ("Balance: $" + balance);
+        this.message.setText("Welcome!");
+        this.bet.setBounds(170, 130, 120, 30);
+        this.betInput.setBounds(270, 130, 120, 30);
+        this.start.setBounds(170, 300, 120,30);
+        this.restart.setBounds(320, 300, 120,30);
+        this.message.setBounds(200, 170, 250, 30);
+        this.balance.setBounds(0,0,200,30);
         this.revalidate();
-        this.preGame.setVisible(true);
         this.repaint();
+        this.add(bet);
+        this.add(betInput);      
+        this.add(this.start);
+        this.add(this.restart);
+        this.add(this.balance);
+        this.add(message); 
     }
     
     public void game(int betAmount, int balance) 
     {
-        this.getContentPane();
+        this.getContentPane().removeAll();
+        this.setSize(1200,800);     
+        this.setLocationRelativeTo(null);
         this.setLayout(null);
         JLabel betDisplay = new JLabel("Bet ammount: $" + betAmount);
         this.balance = new JLabel ("Current balance: $" + balance);
@@ -121,12 +129,11 @@ public class View extends JFrame implements Observer{
         this.stand.setBounds(600, 700, 120, 30);
         this.playerHand.setBounds(0, 100, 100, 30);
         this.computerHand.setBounds(0, 350, 120, 30);
-        
-        this.getContentPane().removeAll();
+        this.restart.setBounds(750, 700, 120, 30);
+        this.add(restart);
         this.add(this.balance);
         this.add(betDisplay);
         this.add(this.playerHand);
-        
         this.add(this.computerHand);
         this.add(message);
         this.add(draw);
@@ -136,20 +143,30 @@ public class View extends JFrame implements Observer{
         this.repaint();
     }
     
+    public void resetSize()// this is for when player want a new game!
+    {
+        this.x = 150;
+        this.y = 100;
+        this.x_fordh = 150;
+        this.y_frameSize = 800;
+    }
+    
     public void addCardImage(Card c)
     {       
-        this.y_frameSize += 1;
+        this.y_frameSize++;
+        
         CardImage cardImage = new CardImage();
         cardImage.c = c;
         cardImage.setBounds(this.x, this.y, 150, 200);
         this.add(cardImage);
         this.setSize(1200, this.y_frameSize);//sometime the JComponent doesn't show up until I resize the frame...
         this.x = this.x + 200;   
+        
     }
     
     public void dealerPhase(Card c)
     {
-        this.y_frameSize += 1;
+        this.y_frameSize++;
         CardImage cardImage = new CardImage();
         cardImage.c = c;
         cardImage.setBounds(this.x_fordh, 350, 150, 200);
@@ -189,6 +206,46 @@ public class View extends JFrame implements Observer{
         this.add(restart);
         this.balance.setText("Balance: $" + newBalance);
         this.revalidate();
+    }
+    
+    public void quit(int newBalance)
+    {
+        this.getContentPane().removeAll();
+        this.setSize(600, 400);
+        this.setLocationRelativeTo(null);
+        this.balance.setText("Your balance: $" + newBalance);
+        balance.setBounds(247, 120, 150, 30);
+        this.add(balance);
+        this.message.setText("See you again!");
+        message.setBounds(253, 300, 150, 30);
+        this.add(message);
+        this.revalidate();
+        this.repaint();
+    }
+    
+    public void restart()
+    {
+        this.getContentPane().removeAll();
+        
+        this.setSize(600,400);
+        this.setLocationRelativeTo(null);
+        
+        this.username.setBounds(170, 130, 120, 30);
+        this.usernameInput.setBounds(270, 130, 120, 30);
+        this.password.setBounds(170, 180, 120,30);
+        this.passwordInput.setBounds(270, 180, 120,30);
+        this.logIn.setBounds(170, 300, 120,30);
+        this.signUp.setBounds(320, 300, 120,30);
+       
+        this.add(username);
+        this.add(usernameInput);
+        this.add(password);
+        this.add(passwordInput);
+        this.add(logIn);
+        this.add(signUp);
+        this.add(message, BorderLayout.SOUTH);
+        this.add(user);
+        this.setVisible(true);
     }
     
     public void addActionListener(ActionListener listener)
@@ -235,24 +292,13 @@ public class View extends JFrame implements Observer{
                 this.message.setText("This username has been taken! Try a new one!");
             }
 
-        }
-  
-        else if(!this.betFinish)
-        {
-            this.started = true;
-            this.preGamePhase(pd.balance);           
-        }
+        } 
         
-        else if(!this.started)
+        if(pd.restartFlag == true)
         {
-            this.game(pd.betAmount, pd.balance);
+            this.usernameInput.setText("");
+            this.passwordInput.setText("");
+            this.message.setText("Welcome!");
         }
-        
-        else if(pd.quitFlag)
-        {
-            this.afterGamePhase(pd.balance);
-        }
-        
-    }
-      
+    }    
 }
