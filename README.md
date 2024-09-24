@@ -1,5 +1,4 @@
-# BlackJackGame2
-COMP603 assignment
+# BlackJackGame
 
-This is my new BlackJackGame project. 
-I made this because the I give up on debugging the old one...
+A project for my university course **COMP603**.  
+The **MVC** (Model-View-Controller) design pattern is applied in the development of this project.
